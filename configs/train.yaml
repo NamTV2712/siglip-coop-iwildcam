@@ -1,0 +1,16 @@
+data:
+  csv_path: "/kaggle/input/datasets/tvnam2712/df-merged-csv/df_merged.csv" 
+  img_dir: "/kaggle/input/datasets/tvnam2712/cauvangbanlaohac-iwildcam-v2/train"
+  batch_size: 32
+  num_workers: 2
+
+model:
+  backbone: "vit_b16" # SigLIP ViT-B/16
+  ctx_init: "a photo of a" # Câu prompt khởi tạo cho CoOp
+  n_ctx: 4 #The optimal number of context tokens in Prompt Learner
+
+training:
+  lr: 0.002
+  epochs: 10
+  seed: 42
+  output_dir: "/kaggle/working/outputs/checkpoints"

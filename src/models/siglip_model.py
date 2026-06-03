@@ -1,4 +1,3 @@
-%%writefile src/models/siglip_model.py
 import torch
 import torch.nn as nn
 from transformers import AutoModel
@@ -34,6 +33,15 @@ class SigLIPBackbone(nn.Module):
         position_embeddings = self.text_encoder.embeddings.position_embedding(position_ids)
         
         input_embeddings = text_embeddings + position_embeddings
+        
+        # === BẢN VÁ LỖI SDPA ATTENTION MASK ===
+        if attention_mask is not None:
+            # Lấy shape đầu vào [Num_Classes, Seq_Len]
+            input_shape = text_embeddings.size()[:-1]
+            
+            # Sử dụng hàm nội bộ của Hugging Face để mở rộng mask từ 2D int (0, 1) 
+            # thành 4D float (0.0, -10000.0) khớp hoàn toàn với định dạng PyTorch yêu cầu
+            attention_mask = self.text_encoder.get_extended_attention_mask(attention_mask, input_shape)
         
         encoder_outputs = self.text_encoder.encoder(
             inputs_embeds=input_embeddings,
